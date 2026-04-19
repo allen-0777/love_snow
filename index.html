@@ -348,32 +348,6 @@
             if (!animationFrameId) {
                 animationFrameId = requestAnimationFrame(updateHearts);
             }
-
-            // 顯示隱藏提示
-            const msg = document.createElement('div');
-            msg.innerText = "警告：妳的愛意已經滿出來了！🥰";
-            msg.style.position = 'fixed';
-            msg.style.top = '20%';
-            msg.style.left = '50%';
-            msg.style.transform = 'translateX(-50%)';
-            msg.style.color = '#fff';
-            msg.style.fontSize = '1.2rem';
-            msg.style.fontWeight = 'bold';
-            msg.style.textShadow = '0 0 15px #ff4d4d, 0 0 30px #ff0000';
-            msg.style.zIndex = '2000';
-            msg.style.padding = '10px 20px';
-            msg.style.background = 'rgba(255,255,255,0.1)';
-            msg.style.borderRadius = '20px';
-            msg.style.backdropFilter = 'blur(5px)';
-            msg.style.pointerEvents = 'none';
-            msg.style.animation = 'cardEntrance 0.8s forwards';
-            document.body.appendChild(msg);
-
-            setTimeout(() => {
-                msg.style.transition = 'opacity 1s ease';
-                msg.style.opacity = '0';
-                setTimeout(() => msg.remove(), 1000);
-            }, 3000);
         }
 
         // === 效能優化：使用 RequestAnimationFrame 控制動畫與精準的 DOM 回收 ===
