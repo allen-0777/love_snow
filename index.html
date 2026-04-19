@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阮氏雪，我愛妳</title>
+    <!-- 優化：預先連線以加快字型載入 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --text-color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Noto Serif TC', serif;
+            /* 確保在手機瀏覽器不會因為網址列收合而跳動 */
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            background-color: #1a0b12; /* 深邃浪漫的底色 */
+            color: var(--text-color);
+        }
+
+        /* 浪漫漸層背景 */
+        .bg-gradient {
+            position: fixed;
+            inset: 0; 
+            background: linear-gradient(135deg, #2a0815 0%, #4a1525 50%, #1a0812 100%);
+            z-index: -2;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 玻璃面板 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 2.5rem 1.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            text-align: center;
+            width: 85%;
+            max-width: 400px;
+            position: relative;
+            z-index: 10;
+            animation: cardEntrance 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            user-select: none;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .name-title {
+            font-size: 2.2rem; /* 手機版字體縮小 */
+            font-weight: 700;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 0.3rem;
+        }
+
+        .message {
+            font-size: 1.1rem; /* 手機版字體縮小 */
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            line-height: 1.8;
+            letter-spacing: 0.05rem;
+        }
+
+        .love-declaration {
+            font-size: 1.8rem; /* 手機版字體縮小 */
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.3);
+        }
+
+        .photo-container {
+            width: 120px; /* 手機版照片微調縮小 */
+            height: 120px;
+            margin: 0 auto 1.2rem auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-container:hover img {
+            transform: scale(1.1);
+        }
+
+        .heart-icon {
+            font-size: 3.8rem;
+            filter: drop-shadow(0 0 15px rgba(255, 107, 107, 0.8));
+            animation: heartbeat 2s ease-in-out infinite;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent; /* 取消手機點擊時的藍色高光 */
+        }
+
+        /* 優化：點擊時的反饋效果 */
+        .heart-icon:active {
+            transform: scale(0.9);
+            animation: none; 
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.6)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 25px rgba(255, 107, 107, 1)); }
+        }
+
+        .decorative-line {
+            height: 1px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            margin: 1.5rem auto;
+        }
+
+        /* 懸浮粒子 */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 5;
+            animation: floatEffect linear forwards;
+            filter: blur(1px);
+            will-change: transform, opacity;
+        }
+
+        @keyframes floatEffect {
+            0% { transform: translateY(105vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+
+        .btn-interact {
+            margin-top: 2rem;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            outline: none;
+        }
+
+        .btn-interact:hover, .btn-interact:focus-visible {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-interact:active {
+            transform: translateY(0);
+        }
+        
+        /* 噴發的愛心 */
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            will-change: transform, opacity;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 優化：加上 aria-hidden，讓螢幕閱讀器忽略純裝飾元素 -->
+    <div class="bg-gradient" aria-hidden="true"></div>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <!-- 優化：改用 <main> 增加語意化 -->
+    <main class="glass-card">
+        
+        <!-- 嵌入照片 -->
+        <div class="photo-container">
+            <img src="IMG_4533.JPG" alt="阮氏雪的照片">
+        </div>
+
+        <!-- 優化：加上 role 與鍵盤事件，支援無障礙操作 -->
+        <div class="heart-icon" role="button" aria-label="發射愛心" tabindex="0" onclick="spawnHearts()" onkeydown="if(event.key==='Enter'||event.key===' ') spawnHearts()">❤️</div>
+        
+        <h1 class="name-title">阮氏雪</h1>
+        
+        <div class="decorative-line" aria-hidden="true"></div>
+        
+        <p class="message">
+            Gặp được em là điều kỳ diệu tuyệt vời nhất đối với anh.
+        </p>
+        
+        <h2 class="love-declaration">
+            我愛妳
+        </h2>
+        
+        <div class="signature">Always & Forever</div>
+
+        <button class="btn-interact" onclick="spawnHearts()">感受我的愛意</button>
+    </main>
+
+    <script>
+        // === 效能優化：使用 RequestAnimationFrame 控制動畫與精準的 DOM 回收 ===
+        
+        // 1. 處理背景懸浮粒子
+        const particleItems = ['✨', '🤍', '🌸', '❄️'];
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.textContent = particleItems[Math.floor(Math.random() * particleItems.length)];
+            particle.className = 'particle';
+            
+            const size = Math.random() * 10 + 15 + 'px';
+            const duration = Math.random() * 8 + 8; // 8-16s
+            
+            particle.style.fontSize = size;
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = duration + 's';
+            // 避免計算小數點過長
+            particle.style.opacity = (Math.random() * 0.5 + 0.2).toFixed(2);
+            
+            document.body.appendChild(particle);
+            
+            // 優化：使用 animationend 事件精準回收 DOM，避免 setTimeout 不穩定導致內存洩漏
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            }, { once: true });
+        }
+
+        // 稍微拉長背景粒子生成間距以節省效能
+        setInterval(createParticle, 1200);
+        // 初始化先產生幾個粒子，避免一開始畫面太空
+        for(let i = 0; i < 5; i++) {
+            setTimeout(createParticle, i * 200);
+        }
+
+        // 2. 噴發愛心特效 - 改用 requestAnimationFrame 統一管理，大幅提升動畫流暢度並降低 CPU 負載
+        const heartColors = ['#ff4d4d', '#ff85a1', '#ffffff', '#ffb3ba'];
+        const activeHearts = [];
+        let animationFrameId = null;
+
+        function updateHearts() {
+            if (activeHearts.length === 0) {
+                animationFrameId = null;
+                return;
+            }
+
+            for (let i = activeHearts.length - 1; i >= 0; i--) {
+                const h = activeHearts[i];
+                
+                h.x += h.vx;
+                h.y += h.vy;
+                h.vy += 0.15; // 加上微小的重力感
+                h.vx *= 0.98; // 空氣阻力
+                h.vy *= 0.98; // 空氣阻力
+                h.opacity -= 0.015;
+                h.rotation += h.rotSpeed;
+
+                // 優化：使用 translate3d 開啟硬體加速
+                h.el.style.transform = `translate3d(calc(-50% + ${h.x}px), calc(-50% + ${h.y}px), 0) rotate(${h.rotation}deg)`;
+                h.el.style.opacity = h.opacity;
+
+                if (h.opacity <= 0) {
+                    h.el.remove();
+                    activeHearts.splice(i, 1);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(updateHearts);
+        }
+
+        function spawnHearts() {
+            // 防止狂點導致一次產生過多 DOM 造成瀏覽器卡頓
+            if (activeHearts.length > 150) return;
+
+            const spawnCount = 25;
+            // 優化：使用 DocumentFragment 減少 DOM 重繪次數
+            const container = document.createDocumentFragment();
+
+            for(let i = 0; i < spawnCount; i++) {
+                const el = document.createElement('div');
+                el.textContent = '❤️';
+                el.className = 'floating-heart';
+                
+                // 起始位置設在畫面正中央
+                el.style.left = '50%';
+                el.style.top = '50%';
+                el.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+                el.style.fontSize = Math.random() * 15 + 20 + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 12 + 8;
+                
+                activeHearts.push({
+                    el: el,
+                    x: 0,
+                    y: 0,
+                    vx: Math.cos(angle) * velocity,
+                    // 初始帶有一點向上的衝力，配合重力感更真實
+                    vy: Math.sin(angle) * velocity - 2, 
+                    opacity: 1,
+                    rotation: 0,
+                    rotSpeed: (Math.random() - 0.5) * 10
+                });
+
+                container.appendChild(el);
+            }
+            
+            document.body.appendChild(container);
+
+            if (!animationFrameId) {
+                animationFrameId = requestAnimationFrame(updateHearts);
+            }
+        }
+    </script>
+</body>
+</html>
