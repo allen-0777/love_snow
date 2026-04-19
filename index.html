@@ -91,6 +91,21 @@
             margin-top: 0.5rem;
             margin-bottom: 1rem;
             text-shadow: 0 2px 10px rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: opacity 0.4s ease, transform 0.4s ease, text-shadow 0.4s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .love-declaration:active {
+            transform: scale(0.95);
+        }
+
+        .mega-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            will-change: transform, opacity;
         }
 
         .photo-container {
@@ -220,7 +235,7 @@
         </div>
 
         <!-- 優化：加上 role 與鍵盤事件，支援無障礙操作 -->
-        <div class="heart-icon" role="button" aria-label="發射愛心" tabindex="0" onclick="spawnHearts()" onkeydown="if(event.key==='Enter'||event.key===' ') spawnHearts()">❤️</div>
+        <div class="heart-icon" role="button" aria-label="發射愛心" tabindex="0" onclick="checkMegaSpawn()" onkeydown="if(event.key==='Enter'||event.key===' ') checkMegaSpawn()">❤️</div>
         
         <h1 class="name-title">阮氏雪</h1>
         
@@ -230,16 +245,137 @@
             Gặp được em là điều kỳ diệu tuyệt vời nhất đối với anh.
         </p>
         
-        <h2 class="love-declaration">
+        <h2 class="love-declaration" onclick="toggleText(this)" aria-label="點擊切換語言">
             我愛妳
         </h2>
         
         <div class="signature">Always & Forever</div>
 
-        <button class="btn-interact" onclick="spawnHearts()">感受我的愛意</button>
+        <button class="btn-interact" onclick="checkMegaSpawn()">感受我的愛意</button>
     </main>
 
     <script>
+        // === 驚喜一：多國語言切換 ===
+        const loveTexts = ["我愛妳", "Anh yêu em"];
+        let textIndex = 0;
+        function toggleText(el) {
+            // 淡出
+            el.style.opacity = 0;
+            
+            setTimeout(() => {
+                textIndex = (textIndex + 1) % loveTexts.length;
+                el.innerText = loveTexts[textIndex];
+                
+                // 特殊發光效果
+                if(textIndex === 1) {
+                    el.style.textShadow = '0 0 20px #ff85a1, 0 0 40px #ff4d4d';
+                    el.style.color = '#ffb3ba';
+                } else {
+                    el.style.textShadow = '0 2px 10px rgba(255,255,255,0.3)';
+                    el.style.color = 'var(--text-color)';
+                }
+                
+                // 淡入
+                el.style.opacity = 1;
+            }, 400); // 等待淡出動畫(0.4s)完成後變更文字
+        }
+
+        // === 驚喜二：連續點擊 10 次大招 ===
+        let heartClickCount = 0;
+        let clickTimer = null;
+
+        function checkMegaSpawn() {
+            heartClickCount++;
+            
+            // 每次點擊後，如果2秒內沒有再點擊，就重置計數器
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                heartClickCount = 0;
+            }, 2000);
+
+            if (heartClickCount >= 10) {
+                heartClickCount = 0; // 重置
+                megaSpawnHearts();
+            } else {
+                spawnHearts();
+            }
+        }
+
+        function megaSpawnHearts() {
+            const spawnCount = 150; // 巨量愛心
+            const container = document.createDocumentFragment();
+            const megaColors = ['#FFD700', '#FFC0CB', '#ff4d4d', '#ff0000', '#ffffff']; // 加入金色
+
+            for(let i = 0; i < spawnCount; i++) {
+                const el = document.createElement('div');
+                el.textContent = '❤️';
+                el.className = 'mega-heart';
+                
+                // 從畫面四面八方噴發，不只從中間
+                el.style.left = (Math.random() * 100) + 'vw';
+                el.style.top = '110vh'; // 從螢幕最底下往上噴發
+                const randomColor = megaColors[Math.floor(Math.random() * megaColors.length)];
+                el.style.color = randomColor;
+                el.style.fontSize = Math.random() * 20 + 15 + 'px';
+                
+                // 金色特別放大
+                if (randomColor === '#FFD700') { 
+                    el.style.fontSize = Math.random() * 25 + 25 + 'px';
+                    el.style.textShadow = '0 0 15px #FFD700';
+                    el.textContent = '✨'; // 夾雜一些星星
+                }
+
+                // 往上衝的速度與角度
+                const angle = (Math.random() * Math.PI) + Math.PI; // 向上半圓
+                const velocity = Math.random() * 25 + 15; // 速度超快
+                
+                activeHearts.push({
+                    el: el,
+                    x: 0,
+                    y: 0,
+                    vx: (Math.random() - 0.5) * 15, // 隨機左右擴散
+                    vy: -velocity, // 往上衝
+                    opacity: 1,
+                    rotation: 0,
+                    rotSpeed: (Math.random() - 0.5) * 15
+                });
+
+                container.appendChild(el);
+            }
+            
+            document.body.appendChild(container);
+
+            if (!animationFrameId) {
+                animationFrameId = requestAnimationFrame(updateHearts);
+            }
+
+            // 顯示隱藏提示
+            const msg = document.createElement('div');
+            msg.innerText = "警告：妳的愛意已經滿出來了！🥰";
+            msg.style.position = 'fixed';
+            msg.style.top = '20%';
+            msg.style.left = '50%';
+            msg.style.transform = 'translateX(-50%)';
+            msg.style.color = '#fff';
+            msg.style.fontSize = '1.2rem';
+            msg.style.fontWeight = 'bold';
+            msg.style.textShadow = '0 0 15px #ff4d4d, 0 0 30px #ff0000';
+            msg.style.zIndex = '2000';
+            msg.style.padding = '10px 20px';
+            msg.style.background = 'rgba(255,255,255,0.1)';
+            msg.style.borderRadius = '20px';
+            msg.style.backdropFilter = 'blur(5px)';
+            msg.style.pointerEvents = 'none';
+            msg.style.animation = 'cardEntrance 0.8s forwards';
+            document.body.appendChild(msg);
+
+            setTimeout(() => {
+                msg.style.transition = 'opacity 1s ease';
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 1000);
+            }, 3000);
+        }
+
         // === 效能優化：使用 RequestAnimationFrame 控制動畫與精準的 DOM 回收 ===
         
         // 1. 處理背景懸浮粒子
