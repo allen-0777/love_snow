@@ -109,24 +109,90 @@
         }
 
         .photo-container {
-            width: 120px; /* 手機版照片微調縮小 */
+            width: 120px;
             height: 120px;
             margin: 0 auto 1.2rem auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            /* 為了 3D 翻轉效果 */
+            perspective: 1000px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .photo-container img {
+        .photo-flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            /* 將邊框加在這裡，與翻轉本體一起轉 */
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .photo-container.flipped .photo-flipper {
+            transform: rotateY(180deg);
+        }
+
+        .photo-front, .photo-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 50%;
+            overflow: hidden;
+            top: -3px; /* 補償邊框的位移 */
+            left: -3px;
+        }
+
+        .photo-front img, .photo-back img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .photo-front {
+            /* 讓正面在最上層 */
+            z-index: 2;
+            transform: rotateY(0deg);
+        }
+
+        /* 點擊前的微暗示 */
+        .photo-container:hover .photo-front img,
+        .photo-container:hover .photo-back img {
+            transform: scale(1.05);
+            transition: transform 0.5s ease;
+        }
+        .photo-front img, .photo-back img {
             transition: transform 0.5s ease;
         }
 
-        .photo-container:hover img {
-            transform: scale(1.1);
+        .photo-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #4a1525 0%, #2a0815 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .photo-back .secret-date {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #ffb3ba;
+            margin-bottom: 5px;
+        }
+
+        .photo-back .secret-text {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Noto Serif TC', serif;
         }
 
         .heart-icon {
@@ -229,9 +295,19 @@
     <!-- 優化：改用 <main> 增加語意化 -->
     <main class="glass-card">
         
-        <!-- 嵌入照片 -->
-        <div class="photo-container">
-            <img src="IMG_4533.JPG" alt="阮氏雪的照片">
+        <!-- 嵌入照片與 3D 翻轉效果 -->
+        <div class="photo-container" onclick="this.classList.toggle('flipped')" aria-label="點擊翻轉照片">
+            <div class="photo-flipper">
+                <!-- 正面 -->
+                <div class="photo-front">
+                    <img src="IMG_4533.JPG" alt="阮氏雪的照片">
+                </div>
+                <!-- 背面 -->
+                <div class="photo-back">
+                    <div class="secret-date">My Love</div>
+                    <div class="secret-text">謝謝妳走進<br>我的生命</div>
+                </div>
+            </div>
         </div>
 
         <!-- 優化：加上 role 與鍵盤事件，支援無障礙操作 -->
